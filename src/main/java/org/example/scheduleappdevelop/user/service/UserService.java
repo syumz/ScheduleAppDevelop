@@ -1,6 +1,11 @@
 package org.example.scheduleappdevelop.user.service;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.example.scheduleappdevelop.common.Const;
+import org.example.scheduleappdevelop.user.dto.LoginRequestDto;
+import org.example.scheduleappdevelop.user.dto.LoginResponseDto;
 import org.example.scheduleappdevelop.user.dto.SignUpResponseDto;
 import org.example.scheduleappdevelop.user.dto.UserResponseDto;
 import org.example.scheduleappdevelop.user.entity.User;
@@ -56,5 +61,34 @@ public class UserService {
         User findUser = userRepository.findByIdOrElseThrow(id);
 
         userRepository.delete(findUser);
+    }
+
+
+    public LoginResponseDto login(String email, String password, HttpServletRequest request) {
+
+        Optional<User> optionalUser = userRepository.findByEmailAndPassword(email, password);
+
+        if(optionalUser.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일과 비밀번호에 맞는 회원정보가 없습니다. :" + email + password);
+        }
+
+        User login = optionalUser.get();
+
+        HttpSession session = request.getSession();
+        System.out.println("로그인되었습니다.: " + session.getId());
+
+        session.setAttribute(Const.LOGIN_USER, login);
+        return new LoginResponseDto(login.getId());
+    }
+
+
+    public void logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        // 세션이 null 이 아니면 (로그인인 경우)
+        if(session != null) {
+            System.out.println("로그아웃되었습니다.: " + session.getId());
+            session.invalidate(); // 해당 세션(데이터)을 삭제한다.
+        }
     }
 }
