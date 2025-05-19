@@ -1,0 +1,24 @@
+package org.example.scheduleappdevelop.schedule.dto;
+
+import lombok.Getter;
+import org.example.scheduleappdevelop.schedule.entity.Schedule;
+
+@Getter
+public class ScheduleResponseDto {
+
+    private final Long id;
+
+    private final String title;
+
+    private final String contents;
+
+    public ScheduleResponseDto(Long id, String title, String contents) {
+        this.id = id;
+        this.title = title;
+        this.contents = contents;
+    }
+
+    public static ScheduleResponseDto toDto(Schedule schedule){
+        return new ScheduleResponseDto(schedule.getId(), schedule.getTitle(), schedule.getContents());
+    }
+}
