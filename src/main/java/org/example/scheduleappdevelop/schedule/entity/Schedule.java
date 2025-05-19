@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.example.scheduleappdevelop.common.entity.BaseEntity;
 import org.example.scheduleappdevelop.user.entity.User;
 
+
 @Getter
 @Entity
 @Table(name = "schedule")
@@ -33,4 +34,15 @@ public class Schedule extends BaseEntity {
         this.contents = contents;
     }
 
+    public void setUser(User user){
+        this.user = user;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContents(String contents) {
+        this.contents = contents;
+    }
 }
