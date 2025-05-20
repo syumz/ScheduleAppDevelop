@@ -1,6 +1,7 @@
 package org.example.scheduleappdevelop.comment.dto;
 
 import lombok.Getter;
+import org.example.scheduleappdevelop.comment.entity.Comment;
 
 @Getter
 public class CommentResponseDto {
@@ -15,5 +16,9 @@ public class CommentResponseDto {
         this.id = id;
         this.username = username;
         this.comment = comment;
+    }
+
+    public static CommentResponseDto toDto(Comment comment){
+        return new CommentResponseDto(comment.getId(), comment.getUser().getUsername(), comment.getComment());
     }
 }

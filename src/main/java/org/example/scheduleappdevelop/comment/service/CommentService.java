@@ -10,6 +10,8 @@ import org.example.scheduleappdevelop.user.entity.User;
 import org.example.scheduleappdevelop.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -34,5 +36,16 @@ public class CommentService {
         Comment savedComment = commentRepository.save(comment1);
 
         return new CommentResponseDto(savedComment.getId(), username, savedComment.getComment());
+    }
+
+    public List<CommentResponseDto> findCommentByScheduleId(Long id) {
+
+        // 스케줄 id가 존재하는지 확인
+        scheduleRepository.findByIdOrElseThrow(id);
+
+        return commentRepository.findByScheduleId(id)
+                .stream()
+                .map(CommentResponseDto::toDto)
+                .toList();
     }
 }
