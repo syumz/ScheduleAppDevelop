@@ -26,6 +26,10 @@ public class UserService {
 
     public SignUpResponseDto signUp(String username, String email, String password) {
 
+        if (userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+        }
+
         String encodePassword = passwordEncoder.encode(password);
 
         User user = new User(username, email, encodePassword);
