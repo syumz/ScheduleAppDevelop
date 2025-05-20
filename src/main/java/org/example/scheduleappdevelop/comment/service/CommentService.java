@@ -8,7 +8,10 @@ import org.example.scheduleappdevelop.schedule.entity.Schedule;
 import org.example.scheduleappdevelop.schedule.repository.ScheduleRepository;
 import org.example.scheduleappdevelop.user.entity.User;
 import org.example.scheduleappdevelop.user.repository.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -22,7 +25,7 @@ public class CommentService {
 
     public CommentResponseDto saveComment(Long id, String username, String comment) {
 
-        // 스케줄 id 가 존재하는지 확인
+        // 스케줄이 존재하는지 확인
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
 
         // 유저가 존재하는지 확인
@@ -47,5 +50,29 @@ public class CommentService {
                 .stream()
                 .map(CommentResponseDto::toDto)
                 .toList();
+    }
+
+    public CommentResponseDto updateComment(Long scheduleId, Long commentId, String comment) {
+
+        // 스케줄 id 가 존재하는지 확인
+        scheduleRepository.findByIdOrElseThrow(scheduleId);
+
+        // 댓글이 존재하는지 확인
+        Comment findComment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "댓글이 존재하지 않습니다."));
+
+        findComment.setComment(comment);
+
+        Comment updateComment = commentRepository.save(findComment);
+
+        return CommentResponseDto.toDto(updateComment);
+    }
+
+    public void delete(Long scheduleId, Long commentId) {
+        scheduleRepository.findByIdOrElseThrow(scheduleId);
+
+        Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
+
+        commentRepository.delete(findComment);
     }
 }
