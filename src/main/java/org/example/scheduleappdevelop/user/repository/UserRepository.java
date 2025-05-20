@@ -23,5 +23,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exists id: " +id));
     }
 
-    Optional<User> findByEmailAndPassword(String email, String password);
+    Optional<User> findByEmail(String email);
 }

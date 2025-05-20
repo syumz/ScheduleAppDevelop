@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.scheduleappdevelop.common.Const;
-import org.example.scheduleappdevelop.user.dto.LoginRequestDto;
+import org.example.scheduleappdevelop.config.PasswordEncoder;
 import org.example.scheduleappdevelop.user.dto.LoginResponseDto;
 import org.example.scheduleappdevelop.user.dto.SignUpResponseDto;
 import org.example.scheduleappdevelop.user.dto.UserResponseDto;
@@ -22,10 +22,13 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public SignUpResponseDto signUp(String username, String email, String password) {
 
-        User user = new User(username, email, password);
+        String encodePassword = passwordEncoder.encode(password);
+
+        User user = new User(username, email, encodePassword);
 
         User savedUser = userRepository.save(user);
 
@@ -66,18 +69,22 @@ public class UserService {
 
     public LoginResponseDto login(String email, String password, HttpServletRequest request) {
 
-        Optional<User> optionalUser = userRepository.findByEmailAndPassword(email, password);
+        Optional<User> optionalUser = userRepository.findByEmail(email);
 
         if(optionalUser.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일과 비밀번호에 맞는 회원정보가 없습니다. :" + email + password);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일에 맞는 회원정보가 없습니다.");
         }
 
         User login = optionalUser.get();
 
+        if(!passwordEncoder.matches(password, login.getPassword())){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호에 맞는 회원정보가 없습니다.");
+        }
+
         HttpSession session = request.getSession();
         System.out.println("로그인되었습니다.: " + session.getId());
-
         session.setAttribute(Const.LOGIN_USER, login);
+
         return new LoginResponseDto(login.getId());
     }
 
