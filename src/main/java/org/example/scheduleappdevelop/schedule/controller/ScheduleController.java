@@ -1,9 +1,7 @@
 package org.example.scheduleappdevelop.schedule.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.scheduleappdevelop.schedule.dto.ScheduleRequestDto;
-import org.example.scheduleappdevelop.schedule.dto.ScheduleResponseDto;
-import org.example.scheduleappdevelop.schedule.dto.UpdateScheduleRequestDto;
+import org.example.scheduleappdevelop.schedule.dto.*;
 import org.example.scheduleappdevelop.schedule.service.ScheduleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,5 +44,10 @@ public class ScheduleController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping ("/paging")// 일정 페이지 조회
+    public ResponseEntity<SchedulePageInfoResponseDto<SchedulePageResponseDto>> pagingSchedule(
+            @ModelAttribute SchedulePageRequestDto requestDto){
+        return new ResponseEntity<>(scheduleService.pagingSchedule(requestDto.getPage(), requestDto.getSize()), HttpStatus.OK);
 
+    }
 }

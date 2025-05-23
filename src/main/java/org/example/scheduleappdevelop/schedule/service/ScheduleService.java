@@ -1,16 +1,25 @@
 package org.example.scheduleappdevelop.schedule.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.scheduleappdevelop.comment.entity.Comment;
+import org.example.scheduleappdevelop.comment.repository.CommentRepository;
+import org.example.scheduleappdevelop.schedule.dto.SchedulePageInfoResponseDto;
+import org.example.scheduleappdevelop.schedule.dto.SchedulePageResponseDto;
 import org.example.scheduleappdevelop.schedule.dto.ScheduleResponseDto;
 import org.example.scheduleappdevelop.schedule.entity.Schedule;
 import org.example.scheduleappdevelop.schedule.repository.ScheduleRepository;
 import org.example.scheduleappdevelop.user.entity.User;
 import org.example.scheduleappdevelop.user.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +27,7 @@ public class ScheduleService{
 
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
     public ScheduleResponseDto saveSchedule(String username, String title, String contents) {
 
@@ -28,7 +38,7 @@ public class ScheduleService{
 
         Schedule savedSchedule = scheduleRepository.save(schedule);
 
-        return new ScheduleResponseDto(savedSchedule.getId(), savedSchedule.getTitle(), savedSchedule.getContents());
+        return new ScheduleResponseDto(savedSchedule.getId(), savedSchedule.getTitle(), savedSchedule.getContents(), savedSchedule.getCreatedAt(), savedSchedule.getModifiedAt());
     }
 
     public List<ScheduleResponseDto> findAll() {
@@ -56,12 +66,39 @@ public class ScheduleService{
 
         Schedule updatedSchedule = scheduleRepository.save(schedule);
 
-        return new ScheduleResponseDto(id, updatedSchedule.getTitle(), updatedSchedule.getContents());
+        return new ScheduleResponseDto(id, updatedSchedule.getTitle(), updatedSchedule.getContents(), updatedSchedule.getCreatedAt(),updatedSchedule.getModifiedAt());
     }
 
     public void delete(Long id) {
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
 
         scheduleRepository.delete(findSchedule);
+    }
+
+
+    public SchedulePageInfoResponseDto<SchedulePageResponseDto> pagingSchedule(int page, int size) {
+
+        Page<Schedule> schedulePage = scheduleRepository.findAll(PageRequest.of(page-1, size, Sort.by("modifiedAt").descending()));
+
+        // 현재 페이지에 해당하는 스케줄 아이디를 가져온다.
+        List<Long> scheduleIdList = schedulePage
+                .getContent()
+                .stream()
+                .map(Schedule::getId)
+                .toList();
+
+        // 스케줄 아이디에 맞는 댓글을 가져온다.
+        List<Comment> commentList = commentRepository.findBySchedule_IdIn(scheduleIdList);
+
+        List<SchedulePageResponseDto> list = schedulePage
+                .stream()
+                .map(schedule -> SchedulePageResponseDto.toDto(schedule, commentList))
+                .toList();
+
+        return SchedulePageInfoResponseDto.toDto( 
+                list,
+                page,
+                size
+        );
     }
 }
