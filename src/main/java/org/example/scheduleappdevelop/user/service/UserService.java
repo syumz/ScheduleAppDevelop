@@ -44,7 +44,7 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findById(id);
 
         if (optionalUser.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "아이디가 존재하지 않습니다. :" + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "아이디가 존재하지 않습니다.");
         }
 
         User findUser = optionalUser.get();
@@ -54,7 +54,7 @@ public class UserService {
     @Transactional
     public void updatePassword(Long id, String oldPassword, String newPassword) {
 
-        User findUser = userRepository.findByIdOrElseThrow(id);
+        User findUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 유저를 찾을 수 없습니다."));
 
         if (!findUser.getPassword().equals(oldPassword)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
@@ -65,7 +65,7 @@ public class UserService {
     }
 
     public void delete(Long id) {
-        User findUser = userRepository.findByIdOrElseThrow(id);
+        User findUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 유저를 찾을 수 없습니다."));
 
         userRepository.delete(findUser);
     }

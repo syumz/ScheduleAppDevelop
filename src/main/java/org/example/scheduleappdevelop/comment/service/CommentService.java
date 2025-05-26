@@ -9,7 +9,6 @@ import org.example.scheduleappdevelop.schedule.repository.ScheduleRepository;
 import org.example.scheduleappdevelop.user.entity.User;
 import org.example.scheduleappdevelop.user.repository.UserRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -26,10 +25,10 @@ public class CommentService {
     public CommentResponseDto saveComment(Long id, String username, String comment) {
 
         // 스케줄이 존재하는지 확인
-        Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
+        Schedule findSchedule = scheduleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "일정을 찾을 수 없습니다."));
 
         // 유저가 존재하는지 확인
-        User findUser = userRepository.findMemberByUsernameOrElseThrow(username);
+        User findUser = userRepository.findMemberByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "유저가 존재하지 않습니다."));
 
         Comment comment1 = new Comment(comment);
         comment1.setSchedule(findSchedule);
@@ -44,7 +43,7 @@ public class CommentService {
     public List<CommentResponseDto> findCommentByScheduleId(Long id) {
 
         // 스케줄 id가 존재하는지 확인
-        scheduleRepository.findByIdOrElseThrow(id);
+        scheduleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "일정을 찾을 수 없습니다."));
 
         return commentRepository.findByScheduleId(id)
                 .stream()
@@ -55,7 +54,7 @@ public class CommentService {
     public CommentResponseDto updateComment(Long scheduleId, Long commentId, String comment) {
 
         // 스케줄 id 가 존재하는지 확인
-        scheduleRepository.findByIdOrElseThrow(scheduleId);
+        scheduleRepository.findById(scheduleId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "일정을 찾을 수 없습니다."));
 
         // 댓글이 존재하는지 확인
         Comment findComment = commentRepository.findById(commentId)
@@ -69,9 +68,9 @@ public class CommentService {
     }
 
     public void delete(Long scheduleId, Long commentId) {
-        scheduleRepository.findByIdOrElseThrow(scheduleId);
+        scheduleRepository.findById(scheduleId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "일정을 찾을 수 없습니다."));
 
-        Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
+        Comment findComment = commentRepository.findById(commentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "댓글이 존재하지 않습니다."));
 
         commentRepository.delete(findComment);
     }

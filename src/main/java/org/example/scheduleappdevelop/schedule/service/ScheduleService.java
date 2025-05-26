@@ -12,9 +12,7 @@ import org.example.scheduleappdevelop.schedule.dto.SchedulePageResponseDto;
 import org.example.scheduleappdevelop.schedule.dto.ScheduleResponseDto;
 import org.example.scheduleappdevelop.schedule.entity.Schedule;
 import org.example.scheduleappdevelop.schedule.repository.ScheduleRepository;
-import org.example.scheduleappdevelop.user.dto.UserResponseDto;
 import org.example.scheduleappdevelop.user.entity.User;
-import org.example.scheduleappdevelop.user.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -29,13 +27,10 @@ import java.util.List;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
-    private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final PasswordEncoder passwordEncoder;
 
     public ScheduleResponseDto saveSchedule(HttpServletRequest request, String title, String contents) {
-
-//        User findUser = userRepository.findMemberByUsernameOrElseThrow(username);
 
         HttpSession session = request.getSession(false);
         User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
@@ -90,7 +85,8 @@ public class ScheduleService {
     }
 
     public void delete(Long id) {
-        Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
+        Schedule findSchedule = scheduleRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "일정을 찾을 수 없습니다."));
 
         scheduleRepository.delete(findSchedule);
     }
