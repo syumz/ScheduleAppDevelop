@@ -30,7 +30,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    public User(){
+    public User() {
     }
 
     public User(String username, String email, String password) {
@@ -39,7 +39,7 @@ public class User extends BaseEntity {
         this.password = password;
     }
 
-    public void updatePassword(String password){
+    public void updatePassword(String password) {
         this.password = password;
     }
 

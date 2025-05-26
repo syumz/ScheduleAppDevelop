@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-public class SchedulePageResponseDto{
+public class SchedulePageResponseDto {
 
     private final String username;
 
@@ -35,7 +35,7 @@ public class SchedulePageResponseDto{
         this.modifiedAt = modifiedAt;
     }
 
-    public static SchedulePageResponseDto toDto(Schedule schedule, List<Comment> findAllComment){
+    public static SchedulePageResponseDto toDto(Schedule schedule, List<Comment> findAllComment) {
 
         // 각 게시물에 달린 댓글의 개수
         Long commentCount = findAllComment

@@ -37,15 +37,15 @@ public class Comment extends BaseEntity {
 
     }
 
-    public void setUser(User user){
+    public void setUser(User user) {
         this.user = user;
     }
 
-    public void setSchedule(Schedule schedule){
+    public void setSchedule(Schedule schedule) {
         this.schedule = schedule;
     }
 
-    public void setComment(String comment){
+    public void setComment(String comment) {
         this.comment = comment;
     }
 }

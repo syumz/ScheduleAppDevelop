@@ -29,7 +29,7 @@ public class ScheduleResponseDto {
         this.modifiedAt = modifiedAt;
     }
 
-    public static ScheduleResponseDto toDto(Schedule schedule){
+    public static ScheduleResponseDto toDto(Schedule schedule) {
         return new ScheduleResponseDto(schedule.getId(), schedule.getTitle(), schedule.getContents(), schedule.getCreatedAt(), schedule.getModifiedAt());
     }
 }

@@ -18,7 +18,7 @@ public class CommentResponseDto {
         this.comment = comment;
     }
 
-    public static CommentResponseDto toDto(Comment comment){
+    public static CommentResponseDto toDto(Comment comment) {
         return new CommentResponseDto(comment.getId(), comment.getUser().getUsername(), comment.getComment());
     }
 }

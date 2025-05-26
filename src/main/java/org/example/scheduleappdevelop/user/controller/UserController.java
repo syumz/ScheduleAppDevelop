@@ -19,7 +19,7 @@ public class UserController {
 
     @PostMapping("/signup") // 유저 회원가입
     public ResponseEntity<SignUpResponseDto> signup(
-            @RequestBody SignUpRequestDto requestDto){
+            @RequestBody SignUpRequestDto requestDto) {
 
         SignUpResponseDto signUpResponseDto =
                 userService.signUp(
@@ -33,7 +33,7 @@ public class UserController {
 
     @GetMapping("/{id}") // 유저 아이디 조회
     public ResponseEntity<UserResponseDto> findById(
-            @PathVariable Long id){
+            @PathVariable Long id) {
 
         UserResponseDto userResponseDto = userService.findById(id);
 
@@ -43,14 +43,14 @@ public class UserController {
     @PatchMapping("/{id}") // 유저 비밀번호 수정
     public ResponseEntity<Void> updatePassword(
             @PathVariable Long id,
-            @RequestBody UpdatePasswordRequestDto requestDto){
+            @RequestBody UpdatePasswordRequestDto requestDto) {
         userService.updatePassword(id, requestDto.getOldPassword(), requestDto.getNewPassword());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}") // 유저 삭제
-    public ResponseEntity<Void> delete(@PathVariable Long id){
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         userService.delete(id);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -59,7 +59,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(
             @Valid @RequestBody LoginRequestDto requestDto,
-            HttpServletRequest request){
+            HttpServletRequest request) {
         LoginResponseDto loginResponseDto = userService.login(requestDto.getEmail(), requestDto.getPassword(), request);
 
         return new ResponseEntity<>(loginResponseDto, HttpStatus.OK);
@@ -67,7 +67,7 @@ public class UserController {
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(
-            HttpServletRequest request){
+            HttpServletRequest request) {
         userService.logout(request);
 
         return new ResponseEntity<>(HttpStatus.OK);

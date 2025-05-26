@@ -10,7 +10,7 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findByScheduleId(Long scheduleId);
 
-    default Comment findByIdOrElseThrow(Long commentId){
+    default Comment findByIdOrElseThrow(Long commentId) {
         return findById(commentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + commentId));
     }
 

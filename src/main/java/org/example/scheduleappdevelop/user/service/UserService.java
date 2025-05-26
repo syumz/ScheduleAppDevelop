@@ -43,8 +43,8 @@ public class UserService {
 
         Optional<User> optionalUser = userRepository.findById(id);
 
-        if(optionalUser.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "아이디가 존재하지 않습니다. :" +id);
+        if (optionalUser.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "아이디가 존재하지 않습니다. :" + id);
         }
 
         User findUser = optionalUser.get();
@@ -56,7 +56,7 @@ public class UserService {
 
         User findUser = userRepository.findByIdOrElseThrow(id);
 
-        if(!findUser.getPassword().equals(oldPassword)){
+        if (!findUser.getPassword().equals(oldPassword)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
 
         }
@@ -75,13 +75,13 @@ public class UserService {
 
         Optional<User> optionalUser = userRepository.findByEmail(email);
 
-        if(optionalUser.isEmpty()){
+        if (optionalUser.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일에 맞는 회원정보가 없습니다.");
         }
 
         User login = optionalUser.get();
 
-        if(!passwordEncoder.matches(password, login.getPassword())){
+        if (!passwordEncoder.matches(password, login.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호에 맞는 회원정보가 없습니다.");
         }
 
@@ -97,7 +97,7 @@ public class UserService {
         HttpSession session = request.getSession(false);
 
         // 세션이 null 이 아니면 (로그인인 경우)
-        if(session != null) {
+        if (session != null) {
             System.out.println("로그아웃되었습니다.: " + session.getId());
             session.invalidate(); // 해당 세션(데이터)을 삭제한다.
         }
