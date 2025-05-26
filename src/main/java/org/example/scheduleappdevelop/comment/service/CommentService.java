@@ -10,6 +10,7 @@ import org.example.scheduleappdevelop.user.entity.User;
 import org.example.scheduleappdevelop.user.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public CommentResponseDto saveComment(Long id, String username, String comment) {
 
         // 스케줄이 존재하는지 확인
@@ -51,6 +53,7 @@ public class CommentService {
                 .toList();
     }
 
+    @Transactional
     public CommentResponseDto updateComment(Long scheduleId, Long commentId, String comment) {
 
         // 스케줄 id 가 존재하는지 확인
@@ -67,6 +70,7 @@ public class CommentService {
         return CommentResponseDto.toDto(updateComment);
     }
 
+    @Transactional
     public void delete(Long scheduleId, Long commentId) {
         scheduleRepository.findById(scheduleId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "일정을 찾을 수 없습니다."));
 

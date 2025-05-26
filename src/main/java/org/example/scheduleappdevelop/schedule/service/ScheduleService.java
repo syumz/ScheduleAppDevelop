@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class ScheduleService {
     private final CommentRepository commentRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public ScheduleResponseDto saveSchedule(HttpServletRequest request, String title, String contents) {
 
         HttpSession session = request.getSession(false);
@@ -55,6 +57,7 @@ public class ScheduleService {
                 .toList();
     }
 
+    @Transactional
     public ScheduleResponseDto updateSchedule(Long id, HttpServletRequest request, String password, String title, String contents) {
 
         Schedule schedule = scheduleRepository.findById(id)
@@ -84,6 +87,7 @@ public class ScheduleService {
         return new ScheduleResponseDto(id, updatedSchedule.getTitle(), updatedSchedule.getContents(), updatedSchedule.getCreatedAt(), updatedSchedule.getModifiedAt());
     }
 
+    @Transactional
     public void delete(Long id) {
         Schedule findSchedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "일정을 찾을 수 없습니다."));
